@@ -15,8 +15,13 @@ exports.createItem = function(schema, item) {
   if(!storage[schema]) storage[schema] = {};
 
   storage[schema][item.id] = item;
+  let newItem = JSON.stringify(item)
 
-  return Promise.resolve(item);
+  fs.writeFileProm(`${__dirname}/../data/cat/${item.id}.json`, newItem)
+  .then(newItem)
+  .catch(console.err);
+
+  return Promise.resolve();
 };
 
 exports.fetchItem = function(schema, id) {
