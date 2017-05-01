@@ -6,7 +6,7 @@ const expect = require('chai').expect;
 describe('cat module', function() {
   describe('when creating a new cat object', function() {
     this.newCat = new Cat('milo', 'hungry');
-    it('should have name, mood, and id properties', done => {
+    it('should have a name, mood, and id property', done => {
       expect(this.newCat).to.have.property('name');
       done();
     });
