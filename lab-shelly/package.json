@@ -9,7 +9,7 @@
   "scripts": {
     "test": "mocha",
     "start": "nodemon server.js",
-    "debug": "DEBUG=http* nodemone server.js"
+    "debug": "DEBUG=http* nodemon server.js"
   },
   "author": "shelly",
   "license": "MIT",

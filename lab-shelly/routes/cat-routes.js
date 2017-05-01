@@ -9,7 +9,6 @@ module.exports = function(router) {
   router.get('/api/cat', function(req, res) {
     debug('GET /api/cat');
     if(req.url.query.id) {
-      // console.log(req.url.query.id);
       storage.fetchItem('cat', req.url.query.id)
       .then(cat => {
         res.writeHead(200, {'Content-Type': 'application/json'});
@@ -71,11 +70,12 @@ module.exports = function(router) {
   router.put('/api/cat', function(req, res) {
     debug('PUT /api/cat');
     if(req.url.query.id) {
-      storage.updateItem('cat', req.url.query.id)
+      storage.updateItem('cat', req.url.query.id, req.body.name, req.body.mood)
       .then(cat => {
         //put request for VALID id (success)
-        cat.name = req.body.name;
-        cat.mood = req.body.mood;
+        // cat.name = req.body.name;
+        // cat.mood = req.body.mood;
+        console.log('cat is: ', cat);
         res.writeHead(202, {'Content-Type': 'application/json'});
         res.write(JSON.stringify(cat));
         res.end();
