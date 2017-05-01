@@ -47,7 +47,6 @@ module.exports = function(router) {
   router.delete('/api/cat', function(req, res) {
     debug('DELETE /api/cat');
     if(req.url.query.id) {
-      // console.log(req.url.query.id);
       storage.deleteItem('cat', req.url.query.id)
       .then(cat => {
         res.writeHead(200, {'Content-Type': 'application/json'});

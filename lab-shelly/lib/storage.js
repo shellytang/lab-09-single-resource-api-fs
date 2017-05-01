@@ -57,10 +57,9 @@ exports.deleteItem = function(schema, id) {
 
     // let item = schemaName[id];
     // if(!item) return reject(new Error('item not found'));
-    fs.unlink(`${__dirname}/../data/${schema}/${id}.json`, function(err) {
-      if (err) {
-        return console.error(err);
-      }
+    fs.unlink(`${__dirname}/../data/${schema}/${id}.json`, function(err){
+      console.log(err);
+      if(err) return reject(err);
       resolve();
     });
   });
