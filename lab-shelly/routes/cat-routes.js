@@ -48,9 +48,9 @@ module.exports = function(router) {
     debug('DELETE /api/cat');
     if(req.url.query.id) {
       storage.deleteItem('cat', req.url.query.id)
-      .then(cat => {
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.write(JSON.stringify(cat));
+      .then(() => {
+        res.writeHead(204, {'Content-Type': 'application/json'});
+        res.write('delete successful'); //204 - no content
         res.end();
       })
       .catch(err => {
@@ -70,13 +70,9 @@ module.exports = function(router) {
     debug('PUT /api/cat');
     if(req.url.query.id) {
       storage.updateItem('cat', req.url.query.id, req.body.name, req.body.mood)
-      .then(cat => {
-        //put request for VALID id (success)
-        // cat.name = req.body.name;
-        // cat.mood = req.body.mood;
-        console.log('cat is: ', cat);
+      .then(() => {
         res.writeHead(202, {'Content-Type': 'application/json'});
-        res.write(JSON.stringify(cat));
+        res.write('update sucessful'); //202 - Accepted request
         res.end();
       })
       .catch(err => {
