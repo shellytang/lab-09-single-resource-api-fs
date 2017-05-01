@@ -1,0 +1,26 @@
+{
+  "name": "lab-shelly",
+  "version": "1.0.0",
+  "description": "lab-09",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "nodemon server.js",
+    "debug": "DEBUG=http* nodemon server.js"
+  },
+  "author": "shelly",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^3.0.0",
+    "debug": "^2.6.6",
+    "mocha": "^3.3.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "uuid": "^3.0.1"
+  }
+}
