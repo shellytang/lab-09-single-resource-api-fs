@@ -50,7 +50,7 @@ module.exports = function(router) {
       storage.deleteItem('cat', req.url.query.id)
       .then(() => {
         res.writeHead(204, {'Content-Type': 'application/json'});
-        res.write('delete successful'); //204 - no content
+        res.write('delete successful');
         res.end();
       })
       .catch(err => {
@@ -70,9 +70,10 @@ module.exports = function(router) {
     debug('PUT /api/cat');
     if(req.url.query.id) {
       storage.updateItem('cat', req.url.query.id, req.body.name, req.body.mood)
-      .then(() => {
+      .then((data) => {
         res.writeHead(202, {'Content-Type': 'application/json'});
-        res.write('update sucessful'); //202 - Accepted request
+        console.log('am i getting it: ',data);
+        res.write(JSON.stringify(data));
         res.end();
       })
       .catch(err => {

@@ -1,7 +1,5 @@
 'use strict';
 
-'use strict';
-
 const server = require('../server');
 const chai = require('chai');
 const http = require('chai-http');
@@ -17,7 +15,6 @@ describe('Server module', function () {
   });
 
 // ++++++++ POST +++++++++
-
   describe('POST method', function() {
     describe('a properly formatted request', function() {
       it('should return a 200 response' , done => {
@@ -70,6 +67,7 @@ describe('Server module', function () {
         });
       });
     });
+
     describe('an unregistered route', function() {
       it('should respond with 404', done => {
         chai.request(server)
@@ -84,7 +82,6 @@ describe('Server module', function () {
 
   // +++++++++++++++++++++GET ++++++++++++++++++++++++++++++
   describe('GET method', function() {
-    //code taken from lab 9 demo
     let resource;
     before(done => {
       chai.request(server)
@@ -117,7 +114,7 @@ describe('Server module', function () {
             done();
           });
         });
-        it('should return a the expected response given a proper id', done => {
+        it('should return the expected response given a proper id', done => {
           chai.request(server)
           .get(`/api/cat?id=${resource.id}`)
           .end((err, res) => {
@@ -135,10 +132,10 @@ describe('Server module', function () {
           });
         });
       });
-      describe('an impropery formatted request', function() {
+      describe('an improperly formatted request', function() {
         it('should return an error response 400 of "not found"', done => {
           chai.request(server)
-          .get(`/api/cat?foo=${resource.id}`) //foo should be id...
+          .get(`/api/cat?foo=${resource.id}`)
           .end((err, res) => {
             expect(res).to.have.status(400);
             done();
@@ -158,93 +155,154 @@ describe('Server module', function () {
     });
   });
   // ++++++++++++++ PUT +++++++++++++++++++++++++++
-    describe('PUT method', function() {
-      describe('/api/cat route', function() {
+  describe('PUT method', function() {
+    describe('/api/cat route', function() {
 
-        let resource;
-        before(done => {
-          chai.request(server)
-          .post('/api/cat')
-          .send({name: 'eva', mood: 'grumpy'})
-          .end((err, res) => {
-            resource = JSON.parse(res.text);
-            done();
-          });
-        });
-
-        after(done => {
-          chai.request(server)
-          .delete('/api/cat')
-          .query({id: resource.id})
-          .end(() => {
-            console.error();
-            done();
-          });
-        });
-
-        describe('a properly formatted request', function() {
-
-          it('should return a 202 response', done => {
-            chai.request(server)
-            .put('/api/cat')
-            .query({id: resource.id})
-            .send({name: 'mia', mood: 'happy'})
-            .end((err, res) => {
-              expect(res).to.have.status(202);
-              done();
-            });
-          });
-          it('should return a response body object', done => {
-            chai.request(server)
-            .put('/api/cat')
-            .query({id: resource.id})
-            .send({name: 'mia', mood: 'happy'})
-            .end((err, res) => {
-              expect(res).to.be.an('object');
-              done();
-            });
-          });
-          it('should return an updated item with name: mia', done => {
-            chai.request(server)
-            .put('/api/cat')
-            .query({id: resource.id})
-            .send({name: 'mia', mood: 'happy'})
-            .end((err, res) => {
-              let expected = JSON.parse(res.text);
-              expect(resource).to.not.equal(expected);
-              expect(expected.name).to.equal('mia');
-              done();
-            });
-          });
-          it('should return an updated item with mood: happy', done => {
-            chai.request(server)
-            .put('/api/cat')
-            .query({id: resource.id})
-            .send({name: 'mia', mood: 'happy'})
-            .end((err, res) => {
-              let expected = JSON.parse(res.text);
-              expect(resource).to.not.equal(expected);
-              expect(expected.mood).to.equal('happy');
-              done();
-            });
-          });
+      let resource;
+      before(done => {
+        chai.request(server)
+        .post('/api/cat')
+        .send({name: 'eva', mood: 'grumpy'})
+        .end((err, res) => {
+          resource = JSON.parse(res.text);
+          done();
         });
       });
 
-      describe('unregistered route', function() {
-        it('should return a 404 for unregistered route', done => {
+      after(done => {
+        chai.request(server)
+        .delete('/api/cat')
+        .query({id: resource.id})
+        .end(() => {
+          done();
+        });
+      });
+
+      describe('a properly formatted request', function() {
+
+        it('should return a 202 response', done => {
           chai.request(server)
-          .put('/api/dog')
+          .put('/api/cat')
+          .query({id: resource.id})
           .send({name: 'mia', mood: 'happy'})
           .end((err, res) => {
-            expect(res).to.have.status(404);
+            expect(res).to.have.status(202);
+            done();
+          });
+        });
+        it('should return a response body object', done => {
+          chai.request(server)
+          .put('/api/cat')
+          .query({id: resource.id})
+          .send({name: 'mia', mood: 'happy'})
+          .end((err, res) => {
+            expect(res).to.be.an('object');
+            done();
+          });
+        });
+        it('should update the item to name: mia', done => {
+          chai.request(server)
+          .put('/api/cat')
+          .query({id: resource.id})
+          .send({name: 'mia', mood: 'happy'})
+          .end((err, res) => {
+            console.log('what: ', res.body);
+            console.log('what is ID: ', resource.id);
+            let expected = JSON.parse(res.body);
+            expect(resource).to.not.equal(expected);
+            expect(expected.name).to.equal('mia');
+            done();
+          });
+        });
+        it('should update the item to mood: happy', done => {
+          chai.request(server)
+          .put('/api/cat')
+          .query({id: resource.id})
+          .send({name: 'mia', mood: 'happy'})
+          .end((err, res) => {
+            let expected = JSON.parse(res.body);
+            expect(resource).to.not.equal(expected);
+            expect(expected.mood).to.equal('happy');
             done();
           });
         });
       });
     });
 
+    describe('unregistered route', function() {
+      it('should return a 404 for unregistered route', done => {
+        chai.request(server)
+        .put('/api/dog')
+        .send({name: 'mia', mood: 'happy'})
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          done();
+        });
+      });
+    });
+  });
 
+  // ++++++++++++++++++++++++ DELETE ++++++++++++++++++++++++
+  describe('DELETE method', function() {
+
+    let resource;
+    before(done => {
+      chai.request(server)
+      .post('/api/cat')
+      .send({name: 'eva', mood: 'grumpy'})
+      .end((err, res) => {
+        resource = JSON.parse(res.text);
+        done();
+      });
+    });
+
+    after(done => {
+      chai.request(server)
+      .delete('/api/cat')
+      .query({id: resource.id})
+      .end(() => {
+        console.error();
+        done();
+      });
+    });
+
+    describe('/api/cat route', function() {
+
+      describe('a response with a valid id', function() {
+        it('should return a 204 response', done => {
+          chai.request(server)
+          .delete('/api/cat')
+          .query({id: resource.id})
+          .end((err, res) => {
+            expect(res).to.have.status(204);
+            done();
+          });
+        });
+      });
+      describe('an unregistered request', function() {
+        it('should return a 404 request', done => {
+          chai.request(server)
+          .delete('/api/dog')
+          .query({id: resource.id})
+          .end((err, res) => {
+            expect(res).to.have.status(404);
+            done();
+          });
+        });
+      });
+      describe('a request with an improper id', function() {
+        it('should return a 400 response', done => {
+          chai.request(server)
+          .delete('/api/cat')
+          .query({})
+          .end((err, res) => {
+            expect(res).to.have.status(400);
+            done();
+          });
+        });
+      });
+    });
+  });
   after(done => {
     server.close();
     done();

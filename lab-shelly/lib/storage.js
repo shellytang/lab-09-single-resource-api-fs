@@ -15,8 +15,8 @@ exports.createItem = function(schema, item) {
   let jsonItem = JSON.stringify(item);
 
   fs.writeFileProm(`${__dirname}/../data/cat/${item.id}.json`, jsonItem)
-  .then(jsonItem) //return item object to cat-routes.js
-  .catch(console.error); //reject promise if file error
+  .then(jsonItem)
+  .catch(console.error);
 
   return Promise.resolve();
 };
@@ -24,54 +24,49 @@ exports.createItem = function(schema, item) {
 exports.fetchItem = function(schema, id) {
   debug('#fetchItem');
 
-  return new Promise((resolve, reject) => {
-    if(!schema) return reject(new Error('schema required'));
-    if(!id) return reject(new Error('id required'));
+  if(!schema) return Promise.reject(new Error('schema required'));
+  if(!id) return Promise.reject(new Error('id required'));
 
-    resolve(fs.readFileProm(`${__dirname}/../data/${schema}/${id}.json`)
-    .then(data => {
-      try {
-        return JSON.parse(data.toString()); //buffer -> string -> JSON
-      } catch (err) {
-        return reject(err); //issue with parsing data
-      }
-    })
-    .catch(err => reject(err)));
-  });
+  return fs.readFileProm(`${__dirname}/../data/${schema}/${id}.json`)
+  .then(data => {
+    try {
+      return JSON.parse(data.toString());
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  })
+  .catch(err => Promise.reject(err));
 };
 
 exports.deleteItem = function(schema, id) {
   debug('#deleteItem');
-  return new Promise((resolve, reject) => {
-    if(!schema) return reject(new Error('schema required'));
-    if(!id) return reject(new Error('id required'));
 
-    fs.unlinkProm(`${__dirname}/../data/${schema}/${id}.json`, function(err){
-      if(err) return reject(err);
-      resolve();
-    });
-  });
+  if(!schema) return Promise.reject(new Error('schema required'));
+  if(!id) return Promise.reject(new Error('id required'));
+
+  return fs.unlinkProm(`${__dirname}/../data/${schema}/${id}.json`)
+  .then(() => {})
+  .catch((err) => err);
 };
+
 
 exports.updateItem = function(schema, id, name, mood) {
   debug('#putItem');
-  return new Promise((resolve, reject) => {
-    if(!schema) return reject(new Error('schema required'));
-    if(!id) return reject(new Error('id required'));
 
-    fs.readFileProm(`${__dirname}/../data/${schema}/${id}.json`)
-    .then(data => {
-      let jsonItem = JSON.parse(data.toString());
-      jsonItem.name = name; //update with new name
-      jsonItem.mood = mood; //update with new mood
+  if(!schema) return Promise.reject(new Error('schema required'));
+  if(!id) return Promise.reject(new Error('id required'));
+  let jsonItem;
 
-      jsonItem = JSON.stringify(jsonItem); //in order to pass into the call
+  return fs.readFileProm(`${__dirname}/../data/${schema}/${id}.json`)
+  .then(data => {
+    jsonItem = JSON.parse(data.toString());
+    jsonItem.name = name;
+    jsonItem.mood = mood;
 
-      fs.writeFileProm(`${__dirname}/../data/${schema}/${id}.json`, jsonItem)
-        .then(jsonItem)
-        .catch(console.err); //file or data issue then catch error
-      resolve(); //resolve promise
-    })
-    .catch(console.err); //read file issue then catch error
-  });
+    jsonItem = JSON.stringify(jsonItem);
+    return fs.writeFileProm(`${__dirname}/../data/${schema}/${id}.json`, jsonItem)
+    .then(() => jsonItem)
+    .catch(err => console.error(err));
+  })
+  .catch(console.err);
 };
