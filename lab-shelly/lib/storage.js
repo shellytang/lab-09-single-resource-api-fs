@@ -49,7 +49,6 @@ exports.deleteItem = function(schema, id) {
   .catch((err) => err);
 };
 
-
 exports.updateItem = function(schema, id, name, mood) {
   debug('#putItem');
 

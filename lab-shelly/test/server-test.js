@@ -13,7 +13,6 @@ describe('Server module', function () {
     server.listen(3000);
     done();
   });
-
 // ++++++++ POST +++++++++
   describe('POST method', function() {
     describe('a properly formatted request', function() {
@@ -206,8 +205,6 @@ describe('Server module', function () {
           .query({id: resource.id})
           .send({name: 'mia', mood: 'happy'})
           .end((err, res) => {
-            console.log('what: ', res.body);
-            console.log('what is ID: ', resource.id);
             let expected = JSON.parse(res.body);
             expect(resource).to.not.equal(expected);
             expect(expected.name).to.equal('mia');
